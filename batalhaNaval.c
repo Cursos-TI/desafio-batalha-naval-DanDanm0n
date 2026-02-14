@@ -10,6 +10,70 @@ int main() {
     // Sugestão: Posicione dois navios no tabuleiro, um verticalmente e outro horizontalmente.
     // Sugestão: Utilize `printf` para exibir as coordenadas de cada parte dos navios.
 
+    int tamanhotabuleiro = 10, tamanhonavio = 3;
+
+    char linha[10] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
+
+    int coluna[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    int tabuleiro[10][10] = {
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+    };
+
+    int navio1[3] = {3, 3, 3};
+
+    int navio2[3] = {3, 3, 3};
+
+    tabuleiro[2][2] = navio1[0];
+    tabuleiro[2][3] = navio1[1];
+    tabuleiro[2][4] = navio1[2];
+
+    tabuleiro[4][2] = navio2[0];
+    tabuleiro[5][2] = navio2[1];
+    tabuleiro[6][2] = navio2[2];
+
+    if (tamanhotabuleiro>tamanhonavio) {
+        printf("O navio cabe dentro do tabuleiro\n");
+    } else {
+        printf("O navio é maior que os limites do tabuleiro\n");
+        return 0;
+    }
+
+    if (navio1[3] != navio2[3]) {
+        printf("Os navios não se sobrepõem no mapa\n");
+    } else {
+        printf("Os navios estão se sobrepondo no mapa");
+    }
+    
+
+    printf(" TABULEIRO BATALHA NAVAL \n");
+    printf("  ");
+    for (int i = 0; i < 10; i++) {
+        printf("%c ", linha[i]);
+        printf("");
+    }
+    printf("\n");
+    for (int i = 0; i < 10; i++) {
+            printf("%d ", coluna[i]);
+              for (int j = 0; j < 10; j++) {
+                printf("%d ", tabuleiro[i][j]);
+        }
+        printf("\n");
+        }
+        
+
+    return 0;
+}
+
     // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
     // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
     // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
