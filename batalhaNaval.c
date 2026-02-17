@@ -13,6 +13,14 @@ int main() {
     // Tamanho do tabuleiro principal
     #define TABULEIRO 10
 
+    // NOVAS DIMENSÕES DA HABILIDADE
+    #define ALTMATRIZ 3  // i vai de 0 a 2
+    #define LARGMATRIZ 5 // j vai de 0 a 4
+
+    // NOVO CENTRO (Ponto de ancoragem)
+    #define CENTROLINHA 1   // Metade de 3 (índice 1)
+    #define CENTROCOLUNA 2  // Metade de 5 (índice 2)
+
     // Legenda visual
     #define AGUA 0
     #define NAVIO 3
@@ -99,7 +107,163 @@ int main() {
         printf("Os navios são maiores que os limites do tabuleiro\n");
         return 0;
     }
+
+    // Nível Mestre - Habilidades Especiais com Matrizes
+    // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
+    // --- GERAÇÃO DAS MATRIZES 3x5 ---
+    int cone[ALTMATRIZ][LARGMATRIZ];
+    int cruz[ALTMATRIZ][LARGMATRIZ];
+    int octaedro[ALTMATRIZ][LARGMATRIZ];
+
+    for (int i = 0; i < ALTMATRIZ; i++) {
+        for (int j = 0; j < LARGMATRIZ; j++) {
+            // --- CONE ---
+            // Exemplo para habilidade em cone:
+            // 0 0 1 0 0
+            // 0 1 1 1 0
+            // 1 1 1 1 1
+            if (j >= (2 - i) && j <= (2 + i)) {
+                cone[i][j] = 1;
+            } else {
+                cone[i][j] = 0;
+            }
+
+            // --- CRUZ ---
+            // Exemplo para habilidade em cruz:
+            // 0 0 1 0 0
+            // 1 1 1 1 1
+            // 0 0 1 0 0
+            if (i == 1 || j == 2) {
+                cruz[i][j] = 1;
+            } else {
+                cruz[i][j] = 0;
+            }
+
+            // --- OCTAEDRO ---
+            // Exemplo para habilidade em octaedro:
+            // 0 0 1 0 0
+            // 0 1 1 1 0
+            // 0 0 1 0 0
+            int disti = i - 1;
+            int distj = j - 2;  
+
+            if (disti < 0) disti = disti * -1;
+            if (distj < 0) distj = distj * -1;
+
+            if (disti + distj <= 1) {
+                octaedro[i][j] = 1;
+            } else {
+                octaedro[i][j] = 0;
+            }
+        }
+    }
+
+    // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
+    // --- 3. APLICAÇÃO COM VERIFICAÇÃO DE COLISÃO ---
     
+    // Coordenadas de origem (alvos no tabuleiro)
+    int origconeL = 5, origconeC = 2;
+    int origcruzL = 5, origcruzC = 7;
+    int origoctaL = 8, origoctaC = 5;
+
+    int globalL, globalC;
+    int colidiu;
+
+    // --- APLICANDO CONE ---
+    colidiu = 0;
+    // 1: Verificar Colisão
+    for (int i = 0; i < ALTMATRIZ; i++) {
+        for (int j = 0; j < LARGMATRIZ; j++) {
+            if (cone[i][j] == 1) {
+                // Cálculo de posição global ajustado para o novo centro
+                globalL = origconeL - CENTROLINHA + i;
+                globalC = origconeC - CENTROCOLUNA + j;
+                
+                if (globalL >= 0 && globalL < TABULEIRO && globalC >= 0 && globalC < TABULEIRO) {
+                    if (tabuleiro[globalL][globalC] == NAVIO) colidiu = 1;
+                }
+            }
+        }
+    }
+    // 2: Aplicar se seguro
+    if (colidiu == 0) {
+        for (int i = 0; i < ALTMATRIZ; i++) {
+            for (int j = 0; j < LARGMATRIZ; j++) {
+                if (cone[i][j] == 1) {
+                    globalL = origconeL - CENTROLINHA + i;
+                    globalC = origconeC - CENTROCOLUNA + j;
+                    
+                    if (globalL >= 0 && globalL < TABULEIRO && globalC >= 0 && globalC < TABULEIRO)
+                        tabuleiro[globalL][globalC] = HABILIDADE;
+                }
+            }
+        }
+    } else {
+        printf("Habilidade CONE bloqueada por sobreposicao!\n");
+        return 0;
+    }
+
+    // --- APLICANDO CRUZ ---
+    colidiu = 0;
+    for (int i = 0; i < ALTMATRIZ; i++) {
+        for (int j = 0; j < LARGMATRIZ; j++) {
+            if (cruz[i][j] == 1) {
+                globalL = origcruzL - CENTROLINHA + i;
+                globalC = origcruzC - CENTROCOLUNA + j;
+                
+                if (globalL >= 0 && globalL < TABULEIRO && globalC >= 0 && globalC < TABULEIRO) {
+                    if (tabuleiro[globalL][globalC] == NAVIO) colidiu = 1;
+                }
+            }
+        }
+    }
+    if (colidiu == 0) {
+        for (int i = 0; i < ALTMATRIZ; i++) {
+            for (int j = 0; j < LARGMATRIZ; j++) {
+                if (cruz[i][j] == 1) {
+                    globalL = origcruzL - CENTROLINHA + i;
+                    globalC = origcruzC - CENTROCOLUNA + j;
+                    
+                    if (globalL >= 0 && globalL < TABULEIRO && globalC >= 0 && globalC < TABULEIRO)
+                        tabuleiro[globalL][globalC] = HABILIDADE;
+                }
+            }
+        }
+    } else {
+        printf("Habilidade CRUZ bloqueada por sobreposicao!\n");
+        return 0;
+    }
+
+    // --- APLICANDO OCTAEDRO ---
+    colidiu = 0;
+    for (int i = 0; i < ALTMATRIZ; i++) {
+        for (int j = 0; j < LARGMATRIZ; j++) {
+            if (octaedro[i][j] == 1) {
+                globalL = origoctaL - CENTROLINHA + i;
+                globalC = origoctaC - CENTROCOLUNA + j;
+                
+                if (globalL >= 0 && globalL < TABULEIRO && globalC >= 0 && globalC < TABULEIRO) {
+                    if (tabuleiro[globalL][globalC] == NAVIO) colidiu = 1;
+                }
+            }
+        }
+    }
+    if (colidiu == 0) {
+        for (int i = 0; i < ALTMATRIZ; i++) {
+            for (int j = 0; j < LARGMATRIZ; j++) {
+                if (octaedro[i][j] == 1) {
+                    globalL = origoctaL - CENTROLINHA + i;
+                    globalC = origoctaC - CENTROCOLUNA + j;
+                    
+                    if (globalL >= 0 && globalL < TABULEIRO && globalC >= 0 && globalC < TABULEIRO)
+                        tabuleiro[globalL][globalC] = HABILIDADE;
+                }
+            }
+        }
+    } else {
+        printf("Habilidade OCTAEDRO bloqueada por sobreposicao!\n");
+        return 0;
+    }
 
     printf(" TABULEIRO BATALHA NAVAL \n");
     printf("  ");
@@ -115,30 +279,6 @@ int main() {
         }
         printf("\n");
         }
-        
-
-    return 0;
-}
-    // Nível Mestre - Habilidades Especiais com Matrizes
-    // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
-    // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
-    // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
-
-    // Exemplos de exibição das habilidades:
-    // Exemplo para habilidade em cone:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 1 1 1 1 1
-    
-    // Exemplo para habilidade em octaedro:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 0 0 1 0 0
-
-    // Exemplo para habilidade em cruz:
-    // 0 0 1 0 0
-    // 1 1 1 1 1
-    // 0 0 1 0 0
-
+   
     return 0;
 }
